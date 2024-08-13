@@ -16,4 +16,10 @@ class Kriteria extends Model
 	{
 		return $this->hasMany(SubKriteria::class);
 	}
+
+    // relasi ke tabel alternatif
+    public function alternatifs()
+	{
+		return $this->belongsToMany(Alternatif::class)->withPivot('nilai');
+	}
 }

@@ -23,109 +23,48 @@ class Index extends Component
 		return response()->streamDownload(fn () => print($pdf), 'Laporan.pdf');
 	}
 
-	// proses metode PSI
+	// proses metode CPI
 	public function proses()
 	{
-		$alternatifs = Alternatif::orderBy('kode')->get();
-		$kriterias = Kriteria::orderBy('kode')->get('type')->toArray();
-		// dd($kriterias);
+		$alternatifs = Alternatif::whereHas('kriterias')->orderBy('kode')->get();
+		$kriterias = Kriteria::orderBy('kode')->get();
 
-		// penentuan matriks keputusan
-		$Xij = [];
-		foreach ($alternatifs as $ka => $alt) {
-			foreach ($alt->kriteria as $kk => $krit) {
-				$Xij[$ka][$kk] = $krit->pivot->nilai;
-			}
-		}
+        $nilai_minimum = [];
 
-		// normalisasi matriks keputusan
-		$rows = count($Xij);
-		$cols = count($Xij[0]);
-		$Nij = [];
-		for ($j = 0; $j < $cols; $j++) {
-			$xj = [];
-			for ($i = 0; $i < $rows; $i++) {
-				$xj[] = $Xij[$i][$j];
-			}
+        foreach ($kriterias as $kk => $kriteria) {
+            $nilai_minimum[$kriteria->kode] = $kriteria->alternatifs()->wherePivot('kriteria_id', $kriteria->id)->orderByPivot('nilai')->first()->pivot->nilai;
+        }
 
-			$divisor = max($xj);
-			$cost = false;
-			if ($kriterias[$j]['type'] == false) {
-				$cost = true;
-				$divisor = min($xj);
-			}
+        // hitung nilai transformasi tren positif dan negatif
+        $nilai_transformasi = [];
+        foreach ($alternatifs as $ka => $alternatif) {
+            foreach ($alternatif->kriterias as $kk => $kriteria) {
+                if ($kriteria->type) {
+                    $nilai_transformasi[$alternatif->kode][] = ($kriteria->pivot->nilai / $nilai_minimum[$kriteria->kode]) * 100 ;
+                } else {
+                    $nilai_transformasi[$alternatif->kode][] = ($nilai_minimum[$kriteria->kode] / $kriteria->pivot->nilai) * 100 ;
+                }
+            }
+        }
 
-			foreach ($xj as $kj => $x) {
-				$Nij[$kj][$j] = $cost ? ($divisor / $x) : ($x / $divisor);
-			}
-		}
+        // hitung nilai indeks alternatif
+        $array_kriteria = $kriterias->toArray();
+        $nilai_indeks = [];
+        foreach ($nilai_transformasi as $knt => $transformasi) {
+            foreach ($transformasi as $kt => $trans) {
+                $nilai_indeks[$knt][] = $trans * $array_kriteria[$kt]['bobot'];
+            }
+        }
 
-		// menjumlahkan elemen tiap kolom matriks
-		$EN = [];
-		for ($i = 0; $i < $cols; $i++) {
-			$jumlah = 0;
-			for ($j = 0; $j < $rows; $j++) {
-				$jumlah += $Nij[$j][$i];
-			}
-			$EN[] = $jumlah;
-		}
+        // hitung nilai indeks gabungan
+        $indeks_gabungan = [];
+        foreach ($nilai_indeks as $kni => $indeks) {
+            $indeks_gabungan[$kni] = floatval(number_format(array_sum($indeks), 2));
+        }
 
-		// hitung nilai mean
-		$N = [];
-		foreach ($EN as $e) {
-			$N[] = $e / $rows;
-		}
-
-		// hitung variasi preferensi
-		$Tj = [];
-		for ($i = 0; $i < $cols; $i++) {
-			for ($j = 0; $j < $rows; $j++) {
-				$Tj[$j][$i] = pow($Nij[$j][$i] - $N[$i], 2);
-			}
-		}
-
-		// hitung total tiap kriteria
-		$TTj = [];
-		for ($i = 0; $i < $cols; $i++) {
-			$jumlah = 0;
-			for ($j = 0; $j < $rows; $j++) {
-				$jumlah += $Tj[$j][$i];
-			}
-			$TTj[] = $jumlah;
-		}
-
-		// menentukan penyimpangan nilai preferensi
-		$Omega = [];
-		foreach ($TTj as  $ttj) {
-			$Omega[] = 1 - $ttj;
-		}
-
-		// total penyimpangan nilai preferensi
-		$EOmega = array_sum($Omega);
-
-		// menghitung kriteria bobot
-		$Wj = [];
-		foreach ($Omega as $o) {
-			$Wj[] = $o / $EOmega;
-		}
-
-		// menghitung PSI
-		$ThetaI = [];
-		for ($i = 0; $i < $cols; $i++) {
-			for ($j = 0; $j < $rows; $j++) {
-				$ThetaI[$j][$i] = $Nij[$j][$i] * $Wj[$i];
-			}
-		}
-
-		// penjumlahan tiap baris proses sebelumnya
-		$TThetaI = [];
-		foreach ($ThetaI as $theta) {
-			$TThetaI[] = array_sum($theta);
-		}
-
-		foreach ($alternatifs as $key => $alternatif) {
-			$alternatif->nilai = round($TThetaI[$key], 4);
-		}
+        foreach($alternatifs as $key => $alternatif) {
+            $alternatif->nilai = $indeks_gabungan[$alternatif->kode];
+        }
 
 		return $alternatifs;
 	}

@@ -19,6 +19,10 @@ class Create extends Component
 	// method untuk simpan data alternatif
 	public function store()
 	{
+        $this->validate([
+            'kode' => 'required|unique:alternatifs,kode',
+            'nama' => 'required',
+        ]);
 		Alternatif::create([
 			'kode'	=> $this->kode,
 			'name'	=> $this->nama

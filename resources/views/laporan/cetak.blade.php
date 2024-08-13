@@ -8,9 +8,10 @@
 	<title>Cetak Laporan</title>
 </head>
 <body>
-	<h3 style="text-align: center">Laporan</h3>
-	<p>{{ \Carbon\Carbon::now()->isoFormat('LL') }}</p>
-	<div style="margin: 2rem"></div>
+	<h3 style="text-align: center">Hasil Perankingan Karyawan Terbaik</h3>
+    <h4 style="text-align: center">PT Atlas International Indonesia</h4>
+	<p>Tgl. Cetak: {{ \Carbon\Carbon::now()->isoFormat('LL') }}</p>
+	<div style="margin: 2rem; border-bottom: 1px solid #dddddd"></div>
 	<table style="width: 100%">
 		<thead>
 			<tr style="background-color: #000; color: #fff">

@@ -23,7 +23,7 @@ class Edit extends Component
 		foreach ($this->kriterias as $key => $value) {
 			$this->nilai[$value->id] = 0;
 		}
-		foreach ($this->alternatif->kriteria as $krit) {
+		foreach ($this->alternatif->kriterias as $krit) {
 			$this->nilai[$krit->id] = $krit->pivot->nilai ?? 0;
 		}
 	}
@@ -40,7 +40,7 @@ class Edit extends Component
 			$penilaian[$key] = ['nilai' => $value];
 		}
 
-		$this->alternatif->kriteria()->sync($penilaian);
+		$this->alternatif->kriterias()->sync($penilaian);
 		return to_route('penilaian.index');
 	}
 }

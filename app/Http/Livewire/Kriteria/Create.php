@@ -19,6 +19,10 @@ class Create extends Component
 
 	public function store()
 	{
+        $this->validate([
+            'kode' => 'required|unique:kriterias,kode',
+            'nama' => 'required|unique:kriterias,name',
+        ]);
 		Kriteria::create([
 			'kode'	=> $this->kode,
 			'name'	=> $this->nama,

@@ -13,7 +13,7 @@ class Alternatif extends Model
 	protected $guarded = [];
 
 	// relasi ke tabel kriteria
-	public function kriteria()
+	public function kriterias()
 	{
 		return $this->belongsToMany(Kriteria::class)->withPivot('nilai');
 	}
