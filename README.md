@@ -1,6 +1,6 @@
 ## Tentang Aplikasi
 
-Aplikasi ini merupakan project Sistem Pendukung Keputusan menggunakan metode Preference Selection Index. Aplikasi ini dirancang untuk memenuhi pembelajaran Peminatan Program Skripsi di [STMIK Triguna Dharma](https://www.trigunadharma.ac.id). Aplikasi ini dapat diunduh secara bebas, digunakan, dan dimodifikasi sesuai kebutuhan siapapun dengan ketentuan untuk **TIDAK MEMPERJUAL-BELIKAN** dalam bentuk apapun.
+Aplikasi ini merupakan project Sistem Pendukung Keputusan menggunakan metode Composite Performance Index. Aplikasi ini dirancang untuk memenuhi pembelajaran Peminatan Program Skripsi di [STMIK Triguna Dharma](https://www.trigunadharma.ac.id). Aplikasi ini dapat diunduh secara bebas, digunakan, dan dimodifikasi sesuai kebutuhan siapapun dengan ketentuan untuk **TIDAK MEMPERJUAL-BELIKAN** dalam bentuk apapun.
 
 -   [STMIK Triguna Dharma](https://www.trigunadharma.ac.id).
 -   [Laravel](https://laravel.com).
@@ -20,8 +20,8 @@ Aplikasi ini merupakan project Sistem Pendukung Keputusan menggunakan metode Pre
 4. Restart komputer.
 5. Jalankan aplikasi **XAMPP Control Panel**, klik tombol `RUN` untuk Apache dan MySQL.
 6. Download dan install [Visual Studio Code](https://code.visualstudio.com/Download).
-7. Download dan ekstrak project ini pada drive D komputer, rename folder hasil ekstrak menjadi `spk-psi`.
-8. Jalankan aplikasi **Visual Studio Code**, pilih menu `File` -> `Open Folder` lalu pilih folder `spk-psi` hasil tahap sebelumnya.
+7. Download dan ekstrak project ini pada drive D komputer, rename folder hasil ekstrak menjadi `spk-cpi`.
+8. Jalankan aplikasi **Visual Studio Code**, pilih menu `File` -> `Open Folder` lalu pilih folder `spk-cpi` hasil tahap sebelumnya.
 9. Pilih menu `Terminal` -> `New Terminal` pada aplikasi **Visual Studio Code** lalu ketik perintah berikut satu-persatu untuk melakukan instalasi paket-paket yang dibutuhkan:
 
 ```
@@ -30,14 +30,14 @@ npm install
 npm run build
 ```
 
-10. Buka **Google Chrome**, ketikkan alamat [http://localhost/phpmyadmin](http://localhost/phpmyadmin) lalu buat database baru dengan nama `spk-psi`.
+10. Buka **Google Chrome**, ketikkan alamat [http://localhost/phpmyadmin](http://localhost/phpmyadmin) lalu buat database baru dengan nama `spk-cpi`.
 11. Buka kembali aplikasi **Visual Studio Code**. Ubah nama (_rename_) file `.env.example` menjadi `.env` lalu edit bagian database seperti berikut:
 
 ```
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE="spk-psi"
+DB_DATABASE="spk_cpi"
 DB_USERNAME=root
 DB_PASSWORD=
 ```
